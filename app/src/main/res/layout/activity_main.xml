@@ -24,4 +24,13 @@
         android:id="@+id/Devices"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Button"
+        android:id="@+id/testbutton"
+        android:layout_alignBottom="@+id/Devices"
+        android:layout_centerHorizontal="true"
+        android:onClick="setmTestButtonClick"/>
 </RelativeLayout>

@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Onbo BLE Test app</string>
+    <string name="ble_not_support">BLE is NOT support !</string>
+    <string name="error_bluetooth_not_support">Error Bluetooth NOT support.</string>
+    <string name="connected">Connected</string>
+    <string name="disconnected">Disconnected</string>
+    <string name="no_data">No data</string>
+
 </resources>
