@@ -54,8 +54,7 @@ public class BluetoothLeService extends Service
 
     private ScanSettings        scanSettings;
     List<ScanFilter>            filters;
-
-
+    
     public String               mBluetoothGattAdress;
     public boolean              mBluetoothGattServiceDiscover;
     public boolean              mBluetoothGattConnected;
@@ -221,6 +220,7 @@ public class BluetoothLeService extends Service
         return  true;
     }
 
+    //GATT server hosted on BLE device.
     public boolean connect(final String address)
     {
         if ((mBluetoothAdapter == null) || (address == null))
@@ -248,7 +248,7 @@ public class BluetoothLeService extends Service
         final BluetoothDevice   device = mBluetoothAdapter.getRemoteDevice(address);
         if (device == null)
         {
-            Log.d(TAG, "Device not found. Unable to connect.");
+            Log.w(TAG, "Device not found. Unable to connect.");
             return false;
         }
 
@@ -266,6 +266,7 @@ public class BluetoothLeService extends Service
             Log.w(TAG, "BluetoothAdapter not initialized");
             return;
         }
+        mBluetoothGatt.disconnect();
     }
 
     public void close()
@@ -288,6 +289,16 @@ public class BluetoothLeService extends Service
         mBluetoothGatt.readCharacteristic(characteristic);
     }
 
+    public void writeCharacteristic(BluetoothGattCharacteristic characteristic)
+    {
+        if ((mBluetoothAdapter == null) || (mBluetoothGatt == null))
+        {
+            Log.w(TAG, "BluetoothAdapter not initialized");
+            return;
+        }
+        mBluetoothGatt.writeCharacteristic(characteristic);
+    }
+
     public void setCharacteristicNotification(BluetoothGattCharacteristic characteristic, boolean enable)
     {
         if ((mBluetoothAdapter == null) || (mBluetoothGatt == null))
@@ -299,11 +310,20 @@ public class BluetoothLeService extends Service
         mBluetoothGatt.setCharacteristicNotification(characteristic, enable);
         if (UUID_HEART_RATE_MEASUREMENT.equals(characteristic.getUuid()))
         {
-            BluetoothGattDescriptor descriptor =
-                    characteristic.getDescriptor(UUID.fromString(BLEGattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
+            BluetoothGattDescriptor descriptor = characteristic.getDescriptor(
+                    UUID.fromString(BLEGattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
             descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
             mBluetoothGatt.writeDescriptor(descriptor);
         }
+
+        if (UUID_MLC_BLE_WRITE.equals(characteristic.getUuid()))
+        {
+            BluetoothGattDescriptor descriptor = characteristic.getDescriptor(
+                    UUID.fromString(BLEGattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
+            descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+            mBluetoothGatt.writeDescriptor(descriptor);
+        }
+
     }
 
     public List<BluetoothGattService> getSupportedGattServices()
